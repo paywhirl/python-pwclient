@@ -96,6 +96,52 @@ class PayWhirl:
 
         return self._get(str.format('/customer/{0}', customer_id))
 
+    def get_addresses(self, customer_id: int) -> Any:
+        """Get all addresses associated with a single customer
+
+        Args:
+            customer_id: the id number obtained from paywhirl's servers.
+                (use the get_customers() method to find your IDs)
+
+        Returns:
+            A dictionary with a list of addresses associated with the
+            customer
+            or an error message indicating what went wrong.
+        """
+
+        return self._get(str.format('/customer/addresses/{0}', customer_id))
+
+    def get_address(self, address_id: int) -> Any:
+        """Get all addresses associated with a single customer
+
+        Args:
+            address_id: the id number obtained from paywhirl's servers.
+                (use the get_addresses() method to find your IDs)
+
+        Returns:
+            An address associated with the given id
+            or an error message indicating what went wrong.
+        """
+
+        return self._get(str.format('/customer/address/{0}', address_id))
+
+    def get_profile(self, customer_id: int) -> Any:
+        """Get a full profile for a given customer. This includes
+            the customer, the addresses, and the answers to profile
+            questions.
+
+        Args:
+            customer_id: the id number obtained from paywhirl's servers.
+                (use the get_addresses() method to find your IDs)
+
+        Returns:
+            A dictionary associated with the given id that includes
+            customer, addresses, and profile answers
+            or an error message indicating what went wrong.
+        """
+
+        return self._get(str.format('/customer/profile/{0}', customer_id))
+
     def create_customer(self, data: dict) -> Any:
         """Create a new customer with supplied data.
 
@@ -397,7 +443,7 @@ class PayWhirl:
 
         return self._get(str.format('/invoice/{0}', invoice_id))
 
-    def get_invoices(self, customer_id: int) -> Any:
+    def get_invoices(self, customer_id: int, all_invoices: int = 0) -> Any:
         """Get a list of upcoming invoices for a specified customer.
 
         Args:
@@ -408,8 +454,43 @@ class PayWhirl:
             A dictionary or list of dictionaries containing invoice
             data, or an error message indicating what went wrong.
         """
+        return self._get(str.format('/invoices/{0}/{1}', customer_id,
+                                    all_invoices))
 
-        return self._get(str.format('/invoices/{0}', customer_id))
+    def process_invoice(self, invoice_id: int) -> Any:
+        """Process an upcoming invoice by invoice id
+
+        Args:
+            invoice_id: Pass in a known invoice ID or use get_invoices()
+                to get a collection of them from a single customer.
+        Returns:
+            Success or Fail
+        """
+        return self._post(str.format('/invoice/{0}/process', invoice_id))
+
+    def update_invoice_card(self, invoice_id: int, card_id: int) -> Any:
+        """Process an upcoming invoice by invoice id
+
+        Args:
+            invoice_id: Pass in a known invoice ID or use get_invoices()
+                to get a collection of them from a single customer.
+            card_id: Pass in a known card ID to set active card.
+        Returns:
+            Success or Fail
+        """
+        data = {'card_id': card_id}
+        return self._post(str.format('/invoice/{0}/card', invoice_id), data)
+
+    def create_invoice(self, data: dict) -> Any:
+        """Create a new invoice
+
+        Args:
+            data: a dictionary describing the invoice and the items
+            See api.paywhirl.com documentation for details
+        Returns:
+            Success or Fail and invoice_id
+        """
+        return self._post('/invoices', data)
 
     def get_gateways(self) -> Any:
         """Returns a list of your payment gateways.
