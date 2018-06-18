@@ -573,6 +573,21 @@ class PayWhirl:
 
         return self._get(str.format('/email/{0}', template_id))
 
+    def send_email(self, data: dict) -> Any:
+    	"""Send a system generated email based on one of your pre-
+    		 defined templates on your paywhirl account page
+
+    		Args:
+    			see api.paywhirl.com, the list depends on what
+    			email templates you have available
+
+    		Returns:
+    			either a string with "status" => "success" or an error message indicating
+    			the need for another parameter
+    	"""
+
+    	return self._post('/send-email', data)
+
     def get_account(self) -> Any:
         """Get a dictionary containing your account information."""
 
