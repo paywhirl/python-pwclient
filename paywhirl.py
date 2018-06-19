@@ -370,7 +370,7 @@ class PayWhirl:
 
         return self._post('/subscribe/customer', data)
 
-    def update_subscription(self, subscription_id: int, plan_id: int) -> Any:
+    def update_subscription(self, subscription_id: int, plan_id: int, quantity: int=None) -> Any:
         """Change a customer's subscription to a different plan.
 
         Args:
@@ -384,6 +384,8 @@ class PayWhirl:
 
         data = dict([('subscription_id', subscription_id),
                      ('plan_id', plan_id)])
+        if quantity is not None:
+            data['quantity'] = quantity
         return self._post('/update/subscription', data)
 
     def unsubscribe_customer(self, subscription_id: int) -> Any:
