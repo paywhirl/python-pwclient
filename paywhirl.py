@@ -471,7 +471,7 @@ class PayWhirl:
         return self._post(str.format('/invoice/{0}/process', invoice_id))
 
     def update_invoice_card(self, invoice_id: int, card_id: int) -> Any:
-        """Process an upcoming invoice by invoice id
+        """Change the card associated with a given invoice
 
         Args:
             invoice_id: Pass in a known invoice ID or use get_invoices()
@@ -482,6 +482,20 @@ class PayWhirl:
         """
         data = {'card_id': card_id}
         return self._post(str.format('/invoice/{0}/card', invoice_id), data)
+
+    def update_invoice_items(self, invoice_id: int, line_items: dict) -> Any:
+        """Change the number of line items in a give invoice
+
+        Args:
+            invoice_id: Pass in a known invoice ID or use get_invoices()
+                to get a collection of them from a single customer.
+            line_items: Pass in a dictionary of item ids and the updated quantity
+                example:{'1111': 4, '1112', 5}
+        Returns:
+            Success or Fail, and number of items changed
+        """
+        return self._post(str.format('/invoice/{0}/items', invoice_id), line_items)
+
 
     def create_invoice(self, data: dict) -> Any:
         """Create a new invoice
