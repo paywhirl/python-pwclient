@@ -484,6 +484,17 @@ class PayWhirl:
         """
         return self._post(str.format('/invoice/{0}/process', invoice_id))
 
+    def mark_invoice_as_paid(self, invoice_id: int) -> Any:
+        """Mark an upcoming invoice as paid by invoice id
+
+        Args:
+            invoice_id: Pass in a known invoice ID or use get_invoices()
+                to get a collection of them from a single customer.
+        Returns:
+            Success or Fail
+        """
+        return self._post(str.format('/invoice/{0}/mark-as-paid', invoice_id))
+
     def update_invoice_card(self, invoice_id: int, card_id: int) -> Any:
         """Change the card associated with a given invoice
 
