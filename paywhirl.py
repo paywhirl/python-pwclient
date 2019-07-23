@@ -583,6 +583,21 @@ class PayWhirl:
 
         return self._get(str.format('/charge/{0}', charge_id))
 
+    def refund_charge(self, charge_id: int, data: dict) -> Any:
+        """Refund a charge by its ID.
+
+        Args:
+            charge_id: ID of the charge
+            data: dict with refund_amount and mark_only params.
+            See API docs for more info
+
+        Returns:
+            A dictionary containing charge information, or an error
+            message indicating what went wrong.
+        """
+
+        return self._post(str.format('/refund/charge/{0}', charge_id), data)
+
     def get_cards(self, customer_id: int) -> Any:
         """Get a list of cards associated with a customer.
 
