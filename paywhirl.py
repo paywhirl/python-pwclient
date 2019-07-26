@@ -200,6 +200,23 @@ class PayWhirl:
 
         return self._post('/update/customer', data)
 
+    def delete_customer(self, customer_id: int, forget: int = None) -> Any:
+        """Delete an existing customer by its ID.
+
+        Args:
+            customer_id: this can be found via the get_customers() method.
+            forget: send 1 to make this customer data obfuscated besides soft-deleted.
+
+        Returns:
+            A dictionary with {'status: 'success' or 'fail'}
+            or an error message indicating what went wrong.
+        """
+
+        data = dict([('id', customer_id)])
+        if forget is not None:
+            data['forget'] = forget
+        return self._post('/delete/customer', data)
+
     def get_questions(self, return_list_size: int = 100) -> Any:
         """Retrieve a list of all questions associated with your
            account.
