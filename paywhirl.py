@@ -490,16 +490,18 @@ class PayWhirl:
         return self._get(str.format('/invoices/{0}/{1}', customer_id,
                                     all_invoices))
 
-    def process_invoice(self, invoice_id: int) -> Any:
+    def process_invoice(self, invoice_id: int, data: dict) -> Any:
         """Process an upcoming invoice by invoice id
 
         Args:
             invoice_id: Pass in a known invoice ID or use get_invoices()
                 to get a collection of them from a single customer.
+            data: a dictionary with additional processing params
+            See api.paywhirl.com documentation for details
         Returns:
             Success or Fail
         """
-        return self._post(str.format('/invoice/{0}/process', invoice_id))
+        return self._post(str.format('/invoice/{0}/process', invoice_id), data)
 
     def mark_invoice_as_paid(self, invoice_id: int) -> Any:
         """Mark an upcoming invoice as paid by invoice id
