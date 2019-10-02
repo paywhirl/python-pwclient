@@ -514,6 +514,30 @@ class PayWhirl:
         """
         return self._post(str.format('/invoice/{0}/mark-as-paid', invoice_id))
 
+    def add_promo_code_to_invoice(self, invoice_id: int, promo_code: str) -> Any:
+        """Add a promo code to an upcoming invoice
+
+        Args:
+            invoice_id: Pass in a known invoice ID or use get_invoices()
+                to get a collection of them from a single customer.
+            promo_code: The promo code to apply.
+        Returns:
+            Success or Fail
+        """
+        data = dict([('promo_code', promo_code)])
+        return self._post(str.format('/invoice/{0}/add-promo', invoice_id), data)
+
+    def remove_promo_code_from_invoice(self, invoice_id: int) -> Any:
+        """Remove promo code from an upcoming invoice
+
+        Args:
+            invoice_id: Pass in a known invoice ID or use get_invoices()
+                to get a collection of them from a single customer.
+        Returns:
+            Success or Fail
+        """
+        return self._post(str.format('/invoice/{0}/remove-promo', invoice_id))
+
     def update_invoice_card(self, invoice_id: int, card_id: int) -> Any:
         """Change the card associated with a given invoice
 

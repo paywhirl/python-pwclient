@@ -1,0 +1,7 @@
+# ignore everything
+*
+
+# don't ignore these files though
+!.gitignore
+!paywhirl.py
+!README.md
