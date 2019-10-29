@@ -835,7 +835,7 @@ class PayWhirl:
         url = (self._api_base + '/' + endpoint)
         headers = {'api_key': self._api_key, 'api_secret': self._api_secret}
         print(url, headers)
-        resp = requests.post(url, headers=headers, params=params)
+        resp = requests.post(url, headers=headers, json=params)
         if resp.status_code == requests.codes['ok']:
             ret = resp.json()
             resp.close()
