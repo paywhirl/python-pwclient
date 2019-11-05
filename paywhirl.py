@@ -576,6 +576,20 @@ class PayWhirl:
         """
         return self._post('/invoices', data)
 
+    def delete_invoice(self, invoice_id: int) -> Any:
+        """Delete an existing invoice by its ID number.
+
+        Args:
+            invoice_id: this can be found via the get_invoices() method.
+
+        Returns:
+            A dictionary with {'status: 'success' or 'fail'}
+            or an error message indicating what went wrong.
+        """
+
+        data = dict([('id', invoice_id)])
+        return self._post('/delete/invoice', data)
+
     def get_gateways(self) -> Any:
         """Returns a list of your payment gateways.
 
