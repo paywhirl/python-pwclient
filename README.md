@@ -1,10 +1,10 @@
 ## A convenient PayWhirl API wrapper in Python
 
 The [PayWhirl] Python library is provided to allow developers to access PayWhirl
-services without needing to write their own API wrappers. 
+services without needing to write their own API wrappers.
 
-The [Documentation] linked here and below contains all of the available methods 
-for interacting with your PayWhirl account. If you would like to see additional 
+The [Documentation] linked here and below contains all of the available methods
+for interacting with your PayWhirl account. If you would like to see additional
 functionality added, feel free to submit an issue or a pull request.
 
 
@@ -25,23 +25,30 @@ functionality added, feel free to submit an issue or a pull request.
 
 ## Requirements
 
-- [Python]: Python 3.5+ 
+- [Python]: Python 3.5+
 
 ## Installation
 
-Place the `.py` file in your project and import the class so that you can 
-instantiate a PayWhirl object. 
+Place the `.py` file in your project and import the class so that you can
+instantiate a PayWhirl object.
 
-When you create a new PayWhirl object you need to pass in your API key and 
+When you create a new PayWhirl object you need to pass in your API key and
 secret, which can be found in the [API key section of the main site](https://app.paywhirl.com/api-keys).
-```
+
+```python
 # include PayWhirl Python SDK
-import paywhirl as pw
+from paywhirl import PayWhirl, HTTPError
 
 api_key = 'pwpk_xxxxxxxxxxxxxxx'
 api_secret = 'pwpsk_xxxxxxxxxxx'
 
-paywhirl = pw.PayWhirl(api_key, api_secret);
+pw = PayWhirl(api_key, api_secret)
+
+try:
+    print(pw.get_account())
+except HTTPError as e:
+    print(e.response.status_code)
+    print(e.response.text)
 ```
 
 

@@ -1,4 +1,4 @@
-"""PayWhirl API Library
+"""PayWhirl API Client
 ====================
 
 This library has been made available to simplify
@@ -8,32 +8,39 @@ located at [api.paywhirl.com](https://api.paywhirl.com)
 API keys can be obtained after making an account on
 [PayWhirl's account page](https://app.paywhirl.com/api-keys)
 
-
 Example Usage:
 --------------
 ```
-import paywhirl as pw
+from paywhirl import PayWhirl, HTTPError
 
-api_key = '<your_api_key_here>'
-api_secret = '<your_secret_key_here>'
-paywhirl = pw.PayWhirl(api_key, api_secret)
+api_key = 'pwpk_xxxxxxxxxxxxxxx'
+api_secret = 'pwpsk_xxxxxxxxxxx'
 
-list_size_limit = {'limit': 2}
-myobj = paywhirl.get_customers(list_size_limit)
-print(myobj)
+pw = PayWhirl(api_key, api_secret)
+
+try:
+    print(pw.get_account())
+except HTTPError as e:
+    print(e.response.status_code)
+    print(e.response.text)
 ```
 
 For information on type hints in Python 3.5 and higher see
 https://www.python.org/dev/peps/pep-0484/
 """
+
 from typing import Any
 import requests
 
+HTTPError = requests.exceptions.HTTPError
 
-class PayWhirl:
-    _api_key = ''
-    _api_secret = ''
-    _api_base = ''
+class PayWhirl: # pylint: disable=too-many-public-methods
+    """PayWhirl API client"""
+
+    _api_key: str
+    _api_secret: str
+    _api_base: str
+    _verify_ssl: bool
 
     def __init__(
             self,
@@ -52,6 +59,7 @@ class PayWhirl:
         self._api_key = api_key
         self._api_secret = api_secret
         self._api_base = api_base
+        self._verify_ssl = True
 
     def get_customers(self, data: dict) -> list:
         """Get a list of customers associated with your account.
@@ -401,7 +409,7 @@ class PayWhirl:
 
         return self._post('/subscribe/customer', data)
 
-    def update_subscription(self, subscription_id: int, plan_id: int, quantity: int=None) -> Any:
+    def update_subscription(self, subscription_id: int, plan_id: int, quantity: int = None) -> Any:
         """Change a customer's subscription to a different plan.
 
         Args:
@@ -476,7 +484,7 @@ class PayWhirl:
 
         return self._get(str.format('/invoice/{0}', invoice_id))
 
-    def get_invoices(self, customer_id: int, all_invoices: int = 0) -> Any:
+    def get_invoices(self, customer_id: int, all_invoices: bool = False) -> Any:
         """Get a list of upcoming invoices for a specified customer.
 
         Args:
@@ -487,8 +495,9 @@ class PayWhirl:
             A dictionary or list of dictionaries containing invoice
             data, or an error message indicating what went wrong.
         """
-        return self._get(str.format('/invoices/{0}/{1}', customer_id,
-                                    all_invoices))
+
+        params = {'all': '1' if all_invoices else ''}
+        return self._get(str.format('/invoices/{0}', customer_id), params)
 
     def process_invoice(self, invoice_id: int, data: dict) -> Any:
         """Process an upcoming invoice by invoice id
@@ -768,8 +777,8 @@ class PayWhirl:
         return self._get(str.format('/email/{0}', template_id))
 
     def send_email(self, data: dict) -> Any:
-      """Send a system generated email based on one of your pre-
-         defined templates on your paywhirl account page
+        """Send a system generated email based on one of your pre-
+           defined templates on your paywhirl account page
 
         Args:
           see api.paywhirl.com, the list depends on what
@@ -778,9 +787,9 @@ class PayWhirl:
         Returns:
           either a string with "status" => "success" or an error message indicating
           the need for another parameter
-      """
+        """
 
-      return self._post('/send-email', data)
+        return self._post('/send-email', data)
 
     def get_account(self) -> Any:
         """Get a dictionary containing your account information."""
@@ -843,30 +852,23 @@ class PayWhirl:
         """
         return self._post('/multiauth', data)
 
-    def _post(self, endpoint: str, params: Any = None) -> Any:
-        if params is None:
-            params = {}
-        url = (self._api_base + '/' + endpoint)
+    def _request(self, method: str, path: str, params: Any = None) -> Any:
+        params = params or {}
+        url = self._api_base + path
         headers = {'api_key': self._api_key, 'api_secret': self._api_secret}
-        print(url, headers)
-        resp = requests.post(url, headers=headers, json=params)
-        if resp.status_code == requests.codes['ok']:
-            ret = resp.json()
-            resp.close()
-            return ret
+        kwargs = {'headers': headers, 'verify': self._verify_ssl}
 
-        return resp.status_code
+        if method == 'post':
+            resp = requests.post(url, json=params, **kwargs)
+        else:
+            resp = requests.get(url, params=params, **kwargs)
 
-    def _get(self, endpoint: str, params: Any = None) -> Any:
-        if params is None:
-            params = {}
-        url = self._api_base + '/' + endpoint
-        headers = {'api_key': self._api_key, 'api_secret': self._api_secret}
-        print(url, headers)
-        resp = requests.get(url, headers=headers, params=params)
-        if resp.status_code == requests.codes['ok']:
-            ret = resp.json()
-            resp.close()
-            return ret
+        resp.raise_for_status()
+        return resp.json()
 
-        return resp.status_code
+
+    def _post(self, path: str, params: Any = None) -> Any:
+        return self._request('post', path, params)
+
+    def _get(self, path: str, params: Any = None) -> Any:
+        return self._request('get', path, params)
