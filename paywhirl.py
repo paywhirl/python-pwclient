@@ -409,7 +409,14 @@ class PayWhirl: # pylint: disable=too-many-public-methods
 
         return self._post('/subscribe/customer', data)
 
-    def update_subscription(self, subscription_id: int, plan_id: int, quantity: int = None) -> Any:
+    def update_subscription(self, # pylint: disable=too-many-arguments
+                            subscription_id: int,
+                            plan_id: int,
+                            quantity: int = None,
+                            address_id: int = None,
+                            installments_left: int = None,
+                            trial_end: int = None,
+                            card_id: int = None) -> Any:
         """Change a customer's subscription to a different plan.
 
         Args:
@@ -421,10 +428,22 @@ class PayWhirl: # pylint: disable=too-many-public-methods
             or an error message indicating what went wrong.
         """
 
-        data = dict([('subscription_id', subscription_id),
-                     ('plan_id', plan_id)])
+        data = {
+            'subscription_id': subscription_id,
+            'plan_id': plan_id
+        }
+
         if quantity is not None:
             data['quantity'] = quantity
+        if address_id is not None:
+            data['address_id'] = address_id
+        if installments_left is not None:
+            data['installments_left'] = installments_left
+        if trial_end is not None:
+            data['trial_end'] = trial_end
+        if card_id is not None:
+            data['card_id'] = card_id
+
         return self._post('/update/subscription', data)
 
     def unsubscribe_customer(self, subscription_id: int) -> Any:
