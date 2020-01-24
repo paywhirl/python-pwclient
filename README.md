@@ -7,11 +7,10 @@ The [Documentation] linked here and below contains all of the available methods
 for interacting with your PayWhirl account. If you would like to see additional
 functionality added, feel free to submit an issue or a pull request.
 
-
-
   [PayWhirl]: https://app.paywhirl.com/
   [Python]: https://www.python.org/
   [Documentation]: https://api.paywhirl.com/
+
 ### Usage Guide
 
 - [Documentation]
@@ -20,6 +19,7 @@ functionality added, feel free to submit an issue or a pull request.
 
 - [Requirements](#requirements)
 - [Installation](#installation)
+- [Usage](#usage)
 - [License](#license)
 - [About](#about)
 
@@ -29,14 +29,16 @@ functionality added, feel free to submit an issue or a pull request.
 
 ## Installation
 
-Place the `.py` file in your project and import the class so that you can
-instantiate a PayWhirl object.
+```bash
+$ pip3 install --upgrade paywhirl
+```
 
-When you create a new PayWhirl object you need to pass in your API key and
+## Usage
+
+To create a new PayWhirl object, you need to pass your API key and
 secret, which can be found in the [API key section of the main site](https://app.paywhirl.com/api-keys).
 
 ```python
-# include PayWhirl Python SDK
 from paywhirl import PayWhirl, HTTPError
 
 api_key = 'pwpk_xxxxxxxxxxxxxxx'
@@ -51,14 +53,12 @@ except HTTPError as e:
     print(e.response.text)
 ```
 
-
-
 ## License
 
 PayWhirl is copyright © 2016-2018 [PayWhirl Inc.][PayWhirl] This library is free
 software, and may be redistributed under the terms specified in the [license].
 
-  [license]: LICENSE.md
+  [license]: LICENSE
 
 ## About
 
