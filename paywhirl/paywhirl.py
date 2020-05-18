@@ -874,7 +874,7 @@ class PayWhirl: # pylint: disable=too-many-public-methods
     def _request(self, method: str, path: str, params: Any = None) -> Any:
         params = params or {}
         url = self._api_base + path
-        headers = {'api_key': self._api_key, 'api_secret': self._api_secret}
+        headers = {'api-key': self._api_key, 'api-secret': self._api_secret}
         kwargs = {'headers': headers, 'verify': self._verify_ssl}
 
         if method == 'post':
