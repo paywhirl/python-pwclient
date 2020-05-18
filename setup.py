@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="paywhirl",
-    version="1.2",
+    version="1.3",
     author="PayWhirl",
     author_email="developer@paywhirl.com",
     description="Python client for PayWhirl API",
