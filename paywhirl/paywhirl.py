@@ -133,6 +133,64 @@ class PayWhirl: # pylint: disable=too-many-public-methods
 
         return self._get(str.format('/customer/address/{0}', address_id))
 
+    def create_address(self, data: dict) -> Any:
+        """Create a new address for a customer
+
+        Args:
+            data:
+                {
+                    'customer_id': (int),
+                    'first_name': (str),
+                    'last_name': (str),
+                    'address': (str),
+                    'city': (str),
+                    'state': (str),
+                    'zip': (str),
+                    'country': (str),
+                    'phone': (str),
+                }
+
+        Returns:
+            The new address or an error message
+        """
+
+        return self._post('/customer/address', data)
+
+    def update_address(self, address_id: int, data: dict) -> Any:
+        """Update existing address of a customer
+
+        Args:
+            address_id: id of the address to update
+            data:
+                {
+                    'first_name': (str),
+                    'last_name': (str),
+                    'address': (str),
+                    'city': (str),
+                    'state': (str),
+                    'zip': (str),
+                    'country': (str),
+                    'phone': (str),
+                }
+
+        Returns:
+            The updated address or an error message
+        """
+
+        return self._patch(str.format('/customer/address/{0}', address_id), data)
+
+    def delete_address(self, address_id: int) -> Any:
+        """Delete address of a customer
+
+        Args:
+            address_id: id of the address to delete
+
+        Returns:
+            Dictionary with status 'success' or 'failure'.
+        """
+
+        return self._delete(str.format('/customer/address/{0}', address_id))
+
     def get_profile(self, customer_id: int) -> Any:
         """Get a full profile for a given customer. This includes
             the customer, the addresses, and the answers to profile
@@ -877,10 +935,12 @@ class PayWhirl: # pylint: disable=too-many-public-methods
         headers = {'api-key': self._api_key, 'api-secret': self._api_secret}
         kwargs = {'headers': headers, 'verify': self._verify_ssl}
 
-        if method == 'post':
-            resp = requests.post(url, json=params, **kwargs)
+        if method == 'get':
+            kwargs['params'] = params
         else:
-            resp = requests.get(url, params=params, **kwargs)
+            kwargs['json'] = params
+
+        resp = getattr(requests, method)(url, **kwargs)
 
         resp.raise_for_status()
         return resp.json()
@@ -888,6 +948,12 @@ class PayWhirl: # pylint: disable=too-many-public-methods
 
     def _post(self, path: str, params: Any = None) -> Any:
         return self._request('post', path, params)
+
+    def _patch(self, path: str, params: Any = None) -> Any:
+        return self._request('patch', path, params)
+
+    def _delete(self, path: str, params: Any = None) -> Any:
+        return self._request('delete', path, params)
 
     def _get(self, path: str, params: Any = None) -> Any:
         return self._request('get', path, params)
