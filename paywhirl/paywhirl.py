@@ -403,19 +403,20 @@ class PayWhirl: # pylint: disable=too-many-public-methods
 
         return self._post('/update/plan', data)
 
-    def get_subscriptions(self, customer_id: int) -> Any:
+    def get_subscriptions(self, customer_id: int, status: str = 'active') -> Any:
         """Retrieve a list of all subscriptions for a given customer.
 
         Args:
             customer_id: This can be found using the get_customers()
                 method.
+            status: Any of 'active', 'all' or 'canceled'
 
         Returns:
             A list containing plan dictionaries
             or an error message indicating what went wrong.
         """
 
-        return self._get(str.format('/subscriptions/{0}', customer_id))
+        return self._get(str.format('/subscriptions/{0}', customer_id), {'status': status})
 
     def get_subscription(self, subscription_id: int) -> Any:
         """Retrieve a single subscription by passing in an ID.
