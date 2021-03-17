@@ -562,6 +562,21 @@ class PayWhirl: # pylint: disable=too-many-public-methods
 
         return self._get(str.format('/invoice/{0}', invoice_id))
 
+    def update_invoice_next_payment_attempt(self, invoice_id: int, next_payment_attempt_timestamp: int) -> Any:
+        """Process an upcoming invoice by invoice id
+
+        Args:
+            invoice_id: Pass in a known invoice ID or use get_invoices()
+                to get a collection of them from a single customer.
+            next_payment_attempt_timestamp: UNIX timestamp of the scheduled date of processing. Must be in the future.
+            See api.paywhirl.com documentation for details
+        Returns:
+            Success or Fail
+        """
+
+        data = {'next_payment_attempt': next_payment_attempt_timestamp}
+        return self._post(str.format('/invoices/{0}/next-payment-date', invoice_id), data)
+
     def get_invoices(self, customer_id: int, all_invoices: bool = False) -> Any:
         """Get a list of upcoming invoices for a specified customer.
 
