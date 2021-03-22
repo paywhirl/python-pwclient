@@ -562,7 +562,7 @@ class PayWhirl: # pylint: disable=too-many-public-methods
 
         return self._get(str.format('/invoice/{0}', invoice_id))
 
-    def update_invoice_next_payment_attempt(self, invoice_id: int, next_payment_attempt_timestamp: int) -> Any:
+    def update_invoice_next_payment_attempt(self, invoice_id: int, next_payment_attempt_timestamp: int, to_all: bool = False) -> Any:
         """Process an upcoming invoice by invoice id
 
         Args:
@@ -574,7 +574,7 @@ class PayWhirl: # pylint: disable=too-many-public-methods
             Success or Fail
         """
 
-        data = {'next_payment_attempt': next_payment_attempt_timestamp}
+        data = {'next_payment_attempt': next_payment_attempt_timestamp, 'all': to_all}
         return self._post(str.format('/invoices/{0}/next-payment-date', invoice_id), data)
 
     def get_invoices(self, customer_id: int, all_invoices: bool = False) -> Any:
